@@ -24,4 +24,8 @@ public class SignService {
     public Sign findById(Long id){
         return signRepository.findAllById(id).orElseThrow();
     }
+
+    public List<Sign> findAll(){
+        return signRepository.findAll();
+    }
 }
