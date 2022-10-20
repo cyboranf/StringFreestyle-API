@@ -1,0 +1,16 @@
+You wanted to build 15 strings with minimum length = 2 and maximum = 4 made by chars from: abc
+aa
+ab
+ac
+ba
+bb
+bc
+ca
+cb
+cc
+aaa
+aab
+aac
+aba
+abb
+abc
