@@ -25,7 +25,8 @@ public class Sign {
     @Column(name = "maxSize")
     private long maxSizeString;
 
-
+    @Column(name = "is_possible")
+    private boolean isPossible;
 
     public Sign(String elementsOfString, long wantQuantity, long maxQuantity, long minSizeString, long maxSizeString) {
         this.elementsOfString = elementsOfString;
@@ -91,6 +92,14 @@ public class Sign {
 
     public void setMaxSizeString(long maxSizeString) {
         this.maxSizeString = maxSizeString;
+    }
+
+    public boolean isPossible() {
+        return isPossible;
+    }
+
+    public void setPossible(boolean possible) {
+        isPossible = possible;
     }
 
     @Override
