@@ -1,13 +1,20 @@
 package com.example.StringFreestyleApi.web;
 
+import com.example.StringFreestyleApi.algorithm.Permutations;
+import com.example.StringFreestyleApi.algorithm.SaveToFile;
 import com.example.StringFreestyleApi.domain.Sign;
 import com.example.StringFreestyleApi.service.SignService;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.example.StringFreestyleApi.algorithm.Permutations.*;
+import static com.example.StringFreestyleApi.algorithm.SaveToFile.createAndWriteToFile;
 
 @RestController
 @RequestMapping("/generate")
@@ -21,9 +28,19 @@ public class StringCreatorController {
         this.signService = signService;
     }
 
+
+    @Async
     @PostMapping("/{min}/{max}/{elements}/{wanted}")
     public String defineWhatGenerate(@PathVariable long min, @PathVariable long max, @PathVariable String elements, @PathVariable long wanted) {
+//        Thread newThread = new Thread(() -> {
+//            try {
+//                wordsGeneratorWAnotherLink(min, max, elements, wanted);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
         Sign sign = new Sign();
+
         List<Sign> signList = signService.findAll();
         for (Sign sign1 : signList) {
             id++;
@@ -102,78 +119,10 @@ public class StringCreatorController {
             createAndWriteToFile(generatedWordsList, sign.isPossible(), min, max, elements, wanted);
         } else {
             generatedWordsList.add("You wanted to build " + wanted + " strings with minimum length = " + min + " and maximum = " + max + " made by chars from: " + elements);
-            generatedWordsList.add("Error: u cant build: " + wanted + " strings, because " + maxQuantity + " is max");
+            generatedWordsList.add("Error: u cant build: " + wanted + " strings, because " + Permutations.maxQuantity + " is max");
         }
         return generatedWordsList;
     }
 
-    private List<String> generatedWordsList = new ArrayList<>();
-    private long maxQuantity = 0;
-
-
-    void generateStrings(String str, char[] data,
-                         long last, int index, long rowLimit) {
-        int length = str.length();
-        for (int i = 0; i < length; i++) {
-            data[index] = str.charAt(i);
-            if (index == last) {
-                if (rowLimit == maxQuantity) {
-                    return;
-                }
-                generatedWordsList.add(new String(data));
-                maxQuantity++;
-            } else
-                generateStrings(str, data, last,
-                        index + 1, rowLimit);
-        }
-
-    }
-
-    void createDataForGenerated(String str, long length, long rowLimit) {
-        if (rowLimit == maxQuantity) {
-            return;
-        }
-        char[] data = new char[(int) length];
-        char[] temp = str.toCharArray();
-
-        Arrays.sort(temp);
-        str = new String(temp);
-        generateStrings(str, data, length - 1, 0, rowLimit);
-    }
-
-    List<String> changeGeneratedToList(String str, long min, long max, long rowLimit) {
-        while (min != max + 1) {
-            createDataForGenerated(str, min, rowLimit);
-            min++;
-        }
-        List<String> strList = generatedWordsList;
-        return strList;
-    }
-
-    long maxPossibilities(String str, long min, long max) {
-        double mip = 0;
-        for (int i = (int) min; i <= max; i++) {
-            mip = mip + Math.pow(str.length(), i);
-        }
-        return (long) mip;
-    }
-
-    private void createAndWriteToFile(List<String> stringList, boolean possible, long min, long max, String elements, long wantedQuantity) throws IOException {
-        String nameFile = "generate" + min + max + elements + wantedQuantity + ".txt";
-        if (possible) {
-            File file = new File(nameFile);
-            if (!file.exists()) {
-                file.createNewFile();
-
-            }
-
-            PrintWriter printWriter = new PrintWriter(file);
-            for (String permutation : stringList) {
-                printWriter.println(permutation);
-            }
-            printWriter.close();
-        }
-
-    }
 
 }
