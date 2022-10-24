@@ -15,7 +15,7 @@ import static com.example.StringFreestyleApi.algorithm.SaveToFile.createAndWrite
 @RestController
 @RequestMapping("/generate")
 public class StringCreatorController {
-    private long jobs = 0;
+//    private long jobs = 0;
     private long id = 1;
 
     private final SignService signService;
@@ -26,7 +26,7 @@ public class StringCreatorController {
     }
 
 
-    //Post Method u can Create task to generate
+    //Create task to generate
     @Async
     @PostMapping("/{min}/{max}/{elements}/{wanted}")
     public String defineWhatGenerate(@PathVariable long min, @PathVariable long max, @PathVariable String elements, @PathVariable long wanted) {
@@ -57,7 +57,7 @@ public class StringCreatorController {
         return sign.toString();
     }
 
-    //get method
+
     //id is id from database which row u want to generate
     @GetMapping("/{id}")
     public List<String> generateStrings(@PathVariable long id) throws IOException {
@@ -84,7 +84,7 @@ public class StringCreatorController {
 
     }
 
-    //Get method
+
     //You can generate Strings and save them to file and database
     @GetMapping("/{min}/{max}/{elements}/{wanted}")
     public List<String> wordsGeneratorWAnotherLink(@PathVariable long min, @PathVariable long max, @PathVariable String elements, @PathVariable long wanted) throws IOException {
