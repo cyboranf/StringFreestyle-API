@@ -1,16 +1,12 @@
-package com.example.StringFreestyleApi.web;
+package com.example.StringFreestyleApi.controller;
 
 import com.example.StringFreestyleApi.algorithm.Permutations;
-import com.example.StringFreestyleApi.algorithm.SaveToFile;
 import com.example.StringFreestyleApi.domain.Sign;
 import com.example.StringFreestyleApi.service.SignService;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.example.StringFreestyleApi.algorithm.Permutations.*;
@@ -19,7 +15,7 @@ import static com.example.StringFreestyleApi.algorithm.SaveToFile.createAndWrite
 @RestController
 @RequestMapping("/generate")
 public class StringCreatorController {
-    private long jobs=0;
+    private long jobs = 0;
     private long id = 1;
 
     private final SignService signService;
@@ -30,16 +26,11 @@ public class StringCreatorController {
     }
 
 
+    //Post Method u can Create task to generate
     @Async
     @PostMapping("/{min}/{max}/{elements}/{wanted}")
     public String defineWhatGenerate(@PathVariable long min, @PathVariable long max, @PathVariable String elements, @PathVariable long wanted) {
-//        Thread newThread = new Thread(() -> {
-//            try {
-//                wordsGeneratorWAnotherLink(min, max, elements, wanted);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
+
         Sign sign = new Sign();
 
         List<Sign> signList = signService.findAll();
@@ -66,6 +57,8 @@ public class StringCreatorController {
         return sign.toString();
     }
 
+    //get method
+    //id is id from database which row u want to generate
     @GetMapping("/{id}")
     public List<String> generateStrings(@PathVariable long id) throws IOException {
         generatedWordsList.clear();
@@ -91,6 +84,8 @@ public class StringCreatorController {
 
     }
 
+    //Get method
+    //You can generate Strings and save them to file and database
     @GetMapping("/{min}/{max}/{elements}/{wanted}")
     public List<String> wordsGeneratorWAnotherLink(@PathVariable long min, @PathVariable long max, @PathVariable String elements, @PathVariable long wanted) throws IOException {
         Sign sign = new Sign();

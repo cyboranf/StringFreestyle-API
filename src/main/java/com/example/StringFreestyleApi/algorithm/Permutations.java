@@ -8,7 +8,7 @@ public class Permutations {
     public static List<String> generatedWordsList = new ArrayList<>();
     public static long maxQuantity = 0;
 
-
+    //generate strings used recur
     static void generateStrings(String str, char[] data,
                                 long last, int index, long rowLimit) {
         int length = str.length();
@@ -27,6 +27,7 @@ public class Permutations {
 
     }
 
+    //method created tab for creating strings
     public static void createDataForGenerated(String str, long length, long rowLimit) {
         if (rowLimit == maxQuantity) {
             return;
@@ -39,6 +40,7 @@ public class Permutations {
         generateStrings(str, data, length - 1, 0, rowLimit);
     }
 
+    //change finally tabs with generated strings to List
     public static List<String> changeGeneratedToList(String str, long min, long max, long rowLimit) {
         while (min != max + 1) {
             createDataForGenerated(str, min, rowLimit);
@@ -48,6 +50,7 @@ public class Permutations {
         return strList;
     }
 
+    //method return quantity of max possibilities string can be generated
     public static long maxPossibilities(String str, long min, long max) {
         double mip = 0;
         for (int i = (int) min; i <= max; i++) {

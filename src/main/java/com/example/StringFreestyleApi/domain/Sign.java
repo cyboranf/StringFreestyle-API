@@ -28,6 +28,9 @@ public class Sign {
     @Column(name = "is_possible")
     private boolean isPossible;
 
+    @Column(name = "is_done")
+    private boolean isDone;
+
     public Sign(String elementsOfString, long wantQuantity, long maxQuantity, long minSizeString, long maxSizeString) {
         this.elementsOfString = elementsOfString;
         this.wantQuantity = wantQuantity;
@@ -53,6 +56,17 @@ public class Sign {
         this.id = id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
+    }
 
     public String getElementsOfString() {
         return elementsOfString;
