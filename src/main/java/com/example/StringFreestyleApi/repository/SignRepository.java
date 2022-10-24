@@ -10,7 +10,12 @@ import java.util.Optional;
 @Repository
 public interface SignRepository extends JpaRepository<Sign, Long> {
     Sign save(Sign sign);
-    Optional<Sign>findAllById(Long id);
+
+    Optional<Sign> findAllById(Long id);
+
     void deleteById(Long id);
+
     List<Sign> findAll();
+
+    Sign findSignByWantQuantity(long wantQuantity);
 }

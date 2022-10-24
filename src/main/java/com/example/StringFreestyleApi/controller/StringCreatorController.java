@@ -1,5 +1,6 @@
 package com.example.StringFreestyleApi.controller;
 
+import com.example.StringFreestyleApi.algorithm.Finder;
 import com.example.StringFreestyleApi.algorithm.Permutations;
 import com.example.StringFreestyleApi.domain.Sign;
 import com.example.StringFreestyleApi.service.SignService;
@@ -7,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.StringFreestyleApi.algorithm.Permutations.*;
@@ -15,7 +17,7 @@ import static com.example.StringFreestyleApi.algorithm.SaveToFile.createAndWrite
 @RestController
 @RequestMapping("/generate")
 public class StringCreatorController {
-//    private long jobs = 0;
+    private long jobs = 0;
     private long id = 1;
 
     private final SignService signService;
@@ -26,8 +28,7 @@ public class StringCreatorController {
     }
 
 
-    //Create task to generate
-    @Async
+    //create task to generate
     @PostMapping("/{min}/{max}/{elements}/{wanted}")
     public String defineWhatGenerate(@PathVariable long min, @PathVariable long max, @PathVariable String elements, @PathVariable long wanted) {
 
@@ -99,7 +100,7 @@ public class StringCreatorController {
         sign.setMaxSizeString(max);
         sign.setElementsOfString(elements);
         sign.setWantQuantity(wanted);
-
+        sign.setDone(false);
 
         sign.setMaxQuantity(maxPossibilities(elements, min, max));
         if (sign.getMaxQuantity() >= wanted) {
@@ -113,10 +114,42 @@ public class StringCreatorController {
             generatedWordsList.add("You wanted to build " + wanted + " strings with minimum length = " + min + " and maximum = " + max + " made by chars from: " + elements);
             changeGeneratedToList(elements, min, max, wanted);
             createAndWriteToFile(generatedWordsList, sign.isPossible(), min, max, elements, wanted);
+            sign.setDone(true);
         } else {
             generatedWordsList.add("You wanted to build " + wanted + " strings with minimum length = " + min + " and maximum = " + max + " made by chars from: " + elements);
             generatedWordsList.add("Error: u cant build: " + wanted + " strings, because " + Permutations.maxQuantity + " is max");
         }
+        return generatedWordsList;
+    }
+
+    @GetMapping("/")
+    public List<String> wordsGeneratorFromQueue() throws IOException {
+        generatedWordsList.clear();
+        Finder finder = new Finder(signService);
+        List<Long> listFromFinder = finder.wordsToGenerate();
+        jobs = listFromFinder.size();
+        int i = 0;
+        if (listFromFinder.isEmpty()) {
+            generatedWordsList.add("Error: Havent Parameters to create String, use method Post and add task.");
+        } else {
+            while (jobs >= 1) {
+                i++;
+
+
+                Sign stringToGenerate = signService.findByWant(listFromFinder.get(i - 1));
+                if (!stringToGenerate.isDone() && stringToGenerate.isPossible()) {
+                    generatedWordsList.add("You wanted to build " + stringToGenerate.getWantQuantity() + " strings with minimum length = " + stringToGenerate.getMinSizeString() + " and maximum = " + stringToGenerate.getMaxSizeString() + " made by chars from: " + stringToGenerate.getElementsOfString());
+                    generatedWordsList.add("Jobs: " + jobs);
+                    changeGeneratedToList(stringToGenerate.getElementsOfString(), stringToGenerate.getMinSizeString(), stringToGenerate.getMaxSizeString(), stringToGenerate.getWantQuantity());
+                    createAndWriteToFile(generatedWordsList, stringToGenerate.isPossible(), stringToGenerate.getMinSizeString(), stringToGenerate.getMaxSizeString(), stringToGenerate.getElementsOfString(), stringToGenerate.getWantQuantity());
+                    stringToGenerate.setDone(true);
+                    jobs--;
+
+                }
+            }
+        }
+
+
         return generatedWordsList;
     }
 

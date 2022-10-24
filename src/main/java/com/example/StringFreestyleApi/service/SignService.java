@@ -16,16 +16,21 @@ public class SignService {
         this.signRepository = signRepository;
     }
 
-    public Sign saveSign(Sign sign){
+    public Sign saveSign(Sign sign) {
         signRepository.save(sign);
         return sign;
     }
 
-    public Sign findById(Long id){
+    public Sign findById(Long id) {
         return signRepository.findAllById(id).orElseThrow();
     }
 
-    public List<Sign> findAll(){
+    public List<Sign> findAll() {
         return signRepository.findAll();
     }
+
+    public Sign findByWant(long wanted) {
+        return signRepository.findSignByWantQuantity(wanted);
+    }
+
 }
