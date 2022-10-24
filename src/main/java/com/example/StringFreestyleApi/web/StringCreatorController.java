@@ -19,6 +19,7 @@ import static com.example.StringFreestyleApi.algorithm.SaveToFile.createAndWrite
 @RestController
 @RequestMapping("/generate")
 public class StringCreatorController {
+    private long jobs=0;
     private long id = 1;
 
     private final SignService signService;
