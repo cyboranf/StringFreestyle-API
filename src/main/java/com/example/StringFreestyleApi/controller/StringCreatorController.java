@@ -122,6 +122,7 @@ public class StringCreatorController {
         return generatedWordsList;
     }
 
+    //multi task doesnt work right beacuse in permutations i used tabs
     @GetMapping("/")
     public List<String> wordsGeneratorFromQueue() throws IOException {
         generatedWordsList.clear();
@@ -144,7 +145,7 @@ public class StringCreatorController {
                     createAndWriteToFile(generatedWordsList, stringToGenerate.isPossible(), stringToGenerate.getMinSizeString(), stringToGenerate.getMaxSizeString(), stringToGenerate.getElementsOfString(), stringToGenerate.getWantQuantity());
                     stringToGenerate.setDone(true);
                     jobs--;
-
+                    generatedWordsList.add("Jobs: " + jobs);
                 }
             }
         }
